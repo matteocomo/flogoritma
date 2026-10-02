@@ -415,31 +415,33 @@
 
         .linux-section {
             padding: 2.5rem 0;
-            background: #eef4f2;
-            border-block: 1px solid #dce7e3;
+            background: #f4f5f4;
+            border-bottom: 1px solid #e5e5e5;
         }
 
         .linux-content {
             display: grid;
-            grid-template-columns: 64px minmax(0, 1.4fr) minmax(220px, 0.8fr);
+            grid-template-columns: 96px minmax(0, 1.4fr) minmax(220px, 0.8fr);
             align-items: center;
             gap: 1.5rem;
         }
 
-        .linux-mark { width: 56px; height: 56px; object-fit: contain; }
-        .linux-copy h2 { margin-top: 0.25rem; color: var(--bg-dark); font-size: 1.6rem; line-height: 1.2; }
+        .linux-mark { width: 76px; height: 90px; object-fit: contain; }
+        .linux-copy h2 { margin-top: 0.25rem; color: #171717; font-size: 1.6rem; line-height: 1.2; }
         .linux-copy p { margin-top: 0.5rem; max-width: 620px; color: var(--text-muted); font-size: 0.95rem; }
-        .linux-kicker { color: #23766d; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; }
+        .linux-kicker { color: #b45309; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; }
+        .linux-credit { display: inline-block; margin-top: 0.55rem; color: #737373; font-size: 0.66rem; line-height: 1.4; }
+        .linux-credit:hover { color: #404040; text-decoration: underline; }
 
         .linux-points {
             display: grid;
             gap: 0.55rem;
             padding-left: 1.5rem;
-            border-left: 1px solid #cbd8d3;
+            border-left: 1px solid #e5e5e5;
         }
 
-        .linux-point { display: flex; align-items: center; gap: 0.6rem; color: #31434a; font-size: 0.88rem; font-weight: 600; }
-        .linux-point svg { width: 17px; height: 17px; flex: 0 0 auto; color: #23766d; }
+        .linux-point { display: flex; align-items: center; gap: 0.6rem; color: #202020; font-size: 0.88rem; font-weight: 600; }
+        .linux-point svg { width: 17px; height: 17px; flex: 0 0 auto; color: #d97706; }
 
         .tech-grid {
             display: grid;
@@ -603,8 +605,8 @@
             .mobile-toggle { display: block; font-size: 1.5rem; }
             .stats-row { gap: 2rem; flex-wrap: wrap; }
             .footer-content { flex-direction: column; text-align: center; }
-            .linux-content { grid-template-columns: 48px minmax(0, 1fr); gap: 1rem; }
-            .linux-mark { width: 44px; height: 44px; }
+            .linux-content { grid-template-columns: 76px minmax(0, 1fr); gap: 1rem; }
+            .linux-mark { width: 64px; height: 76px; }
             .linux-copy h2 { font-size: 1.35rem; }
             .linux-points { grid-column: 2; padding-left: 0; border-left: 0; }
         }
@@ -679,6 +681,23 @@
         </div>
     </header>
 
+    <section class="linux-section" aria-labelledby="linux-title">
+        <div class="container linux-content">
+            <img class="linux-mark" src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" alt="Tux, mascotte Linux" data-alt-it="Tux, mascotte Linux" data-alt-en="Tux, the Linux mascot" loading="lazy" decoding="async">
+            <div class="linux-copy">
+                <span class="linux-kicker" data-it="Per il desktop Linux" data-en="For the Linux desktop">Per il desktop Linux</span>
+                <h2 id="linux-title" data-it="Creato per Linux" data-en="Built for Linux">Creato per Linux</h2>
+                <p data-it="Pensato per stabilità e controllo nel desktop Linux: un’app C++/Qt 6 senza runtime Electron, con launcher di sistema e apertura diretta dei progetti .flog." data-en="Built around the stability and control of the Linux desktop: a C++/Qt 6 app with no Electron runtime, a system application launcher, and direct opening for .flog projects.">Pensato per stabilità e controllo nel desktop Linux: un’app C++/Qt 6 senza runtime Electron, con launcher di sistema e apertura diretta dei progetti .flog.</p>
+                <a class="linux-credit" href="https://commons.wikimedia.org/wiki/File:Tux.svg" target="_blank" rel="noopener noreferrer" data-it="Tux di Larry Ewing e Simon Budig, tramite Wikimedia Commons" data-en="Tux by Larry Ewing and Simon Budig, via Wikimedia Commons">Tux di Larry Ewing e Simon Budig, tramite Wikimedia Commons</a>
+            </div>
+            <div class="linux-points">
+                <div class="linux-point"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span data-it="C++ e Qt 6, senza Electron" data-en="C++ and Qt 6, no Electron">C++ e Qt 6, senza Electron</span></div>
+                <div class="linux-point"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg><span data-it="Launcher nel menu applicazioni" data-en="Application menu launcher">Launcher nel menu applicazioni</span></div>
+                <div class="linux-point"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/></svg><span data-it="Progetti .flog associati" data-en=".flog project association">Progetti .flog associati</span></div>
+            </div>
+        </div>
+    </section>
+
     <!-- Features Section -->
     <section id="features" class="features">
         <div class="container">
@@ -746,22 +765,6 @@
                     <h4>Linux Wayland</h4>
                     <p data-it="Supporto nativo" data-en="Native support">Supporto nativo</p>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="linux-section" aria-labelledby="linux-title">
-        <div class="container linux-content">
-            <img class="linux-mark" src="https://cdn.simpleicons.org/linux/23766d" alt="Linux" loading="lazy" decoding="async">
-            <div class="linux-copy">
-                <span class="linux-kicker" data-it="Per il desktop Linux" data-en="For the Linux desktop">Per il desktop Linux</span>
-                <h2 id="linux-title" data-it="Fatto per Linux." data-en="Made for Linux.">Fatto per Linux.</h2>
-                <p data-it="Un’app Qt 6 desktop, con launcher nel menu applicazioni e apertura diretta dei progetti .flog." data-en="A Qt 6 desktop app with an application-menu launcher and direct opening for .flog projects.">Un’app Qt 6 desktop, con launcher nel menu applicazioni e apertura diretta dei progetti .flog.</p>
-            </div>
-            <div class="linux-points">
-                <div class="linux-point"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span data-it="App desktop Qt 6" data-en="Qt 6 desktop app">App desktop Qt 6</span></div>
-                <div class="linux-point"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg><span data-it="Launcher nel menu applicazioni" data-en="Application menu launcher">Launcher nel menu applicazioni</span></div>
-                <div class="linux-point"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/></svg><span data-it="Progetti .flog associati" data-en=".flog project association">Progetti .flog associati</span></div>
             </div>
         </div>
     </section>
@@ -913,6 +916,9 @@
             });
             document.querySelectorAll('[data-aria-it][data-aria-en]').forEach(element => {
                 element.setAttribute('aria-label', element.dataset[`aria${selectedLanguage === 'it' ? 'It' : 'En'}`]);
+            });
+            document.querySelectorAll('[data-alt-it][data-alt-en]').forEach(element => {
+                element.alt = element.dataset[`alt${selectedLanguage === 'it' ? 'It' : 'En'}`];
             });
 
             languageSwitcher.setAttribute('aria-label', interfaceText[selectedLanguage].language);
