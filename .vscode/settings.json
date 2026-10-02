@@ -1,0 +1,5 @@
+{
+  "git.postCommitCommand": "push",
+  "git.showPushSuccessNotification": true,
+  "git.autofetch": true
+}
