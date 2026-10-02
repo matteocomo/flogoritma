@@ -143,6 +143,42 @@
         }
 
         .logo span { color: var(--primary); }
+        .logo-mark { width: 28px; height: 28px; flex: 0 0 auto; }
+
+        .language-switcher {
+            display: inline-flex;
+            flex: 0 0 auto;
+            align-items: center;
+            gap: 2px;
+            padding: 3px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: var(--bg-surface);
+        }
+
+        .language-switcher button {
+            min-width: 34px;
+            height: 30px;
+            padding: 0 0.45rem;
+            border: 0;
+            border-radius: 999px;
+            background: transparent;
+            color: var(--text-muted);
+            font: inherit;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .language-switcher button[aria-pressed="true"] {
+            background: var(--bg-dark);
+            color: #ffffff;
+        }
+
+        .language-switcher button:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
 
         .nav-links {
             display: flex;
@@ -189,20 +225,6 @@
             z-index: 1;
         }
 
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.4rem 1rem;
-            background: #eff6ff;
-            color: var(--primary);
-            border-radius: 100px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            border: 1px solid #dbeafe;
-        }
-
         .hero h1 {
             font-size: 3.75rem;
             line-height: 1.1;
@@ -216,6 +238,12 @@
             background: linear-gradient(135deg, var(--primary), var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        .hero h1 .hero-heading-first {
+            background: none;
+            color: var(--bg-dark);
+            -webkit-text-fill-color: initial;
         }
 
         .hero p {
@@ -363,11 +391,12 @@
             border: 1px solid var(--border);
             border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem;
             margin-bottom: 1.25rem;
             color: var(--primary);
             box-shadow: var(--shadow-sm);
         }
+
+        .icon-box svg { width: 22px; height: 22px; }
 
         .feature-card h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--bg-dark); }
         .feature-card p { color: var(--text-muted); font-size: 0.95rem; }
@@ -432,14 +461,11 @@
             aspect-ratio: 16/9;
             background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
             display: flex; align-items: center; justify-content: center;
+            gap: 0.7rem;
             color: #94a3b8; font-weight: 600;
             position: relative;
         }
-        
-        /* Decorative elements for placeholders */
-        .img-placeholder::after {
-            content: '📸'; font-size: 2rem; opacity: 0.5;
-        }
+        .img-placeholder svg { width: 26px; height: 26px; opacity: 0.65; }
 
         .caption { padding: 1rem; font-size: 0.9rem; font-weight: 500; color: var(--text-main); text-align: center; border-top: 1px solid var(--border); }
 
@@ -557,15 +583,22 @@
     <!-- Navigation -->
     <nav id="navbar">
         <div class="container nav-inner">
-            <a href="#" class="logo">🔷 Flogoritma</a>
+            <a href="#" class="logo" aria-label="Pagina iniziale Flogoritma" data-aria-it="Pagina iniziale Flogoritma" data-aria-en="Flogoritma home">
+                <img class="logo-mark" src="assets/flogoritma.svg" alt="">
+                <span>Flogoritma</span>
+            </a>
             <ul class="nav-links" id="site-links">
-                <li><a href="#features">Funzionalità</a></li>
-                <li><a href="#tech">Tecnologia</a></li>
-                <li><a href="#screenshots">Flusso di lavoro</a></li>
-                <li><a href="#download">Download</a></li>
+                <li><a href="#features" data-it="Funzionalità" data-en="Features">Funzionalità</a></li>
+                <li><a href="#tech" data-it="Tecnologia" data-en="Technology">Tecnologia</a></li>
+                <li><a href="#screenshots" data-it="Flusso di lavoro" data-en="Workflow">Flusso di lavoro</a></li>
+                <li><a href="#download" data-it="Download" data-en="Download">Download</a></li>
                 <li><a href="https://github.com/matteocomo/flogoritma" target="_blank" style="color:var(--bg-dark); font-weight:700;">GitHub ↗</a></li>
             </ul>
-            <button class="mobile-toggle" type="button" aria-label="Apri menu" aria-expanded="false" aria-controls="site-links">☰</button>
+            <div class="language-switcher" role="group" aria-label="Lingua" data-aria-it="Lingua" data-aria-en="Language">
+                <button type="button" data-language-option="it" aria-pressed="true">IT</button>
+                <button type="button" data-language-option="en" aria-pressed="false">EN</button>
+            </div>
+            <button class="mobile-toggle" type="button" aria-label="Apri menu" data-aria-it="Apri menu" data-aria-en="Open menu" aria-expanded="false" aria-controls="site-links">☰</button>
         </div>
     </nav>
 
@@ -573,18 +606,17 @@
     <header class="hero">
         <div class="container hero-grid">
             <div class="hero-content animate-on-scroll">
-                <div class="hero-badge">Editor desktop Qt 6 · anteprima</div>
-                    <h1>Progetta algoritmi.<br><span>Esegui passo passo.</span></h1>
-                    <p>Crea diagrammi con variabili, input/output, condizioni e cicli. Flogoritma li interpreta, evidenzia il nodo corrente e mostra gli output durante l’esecuzione.</p>
+                    <h1><span class="hero-heading-first" data-it="Progetta algoritmi." data-en="Design algorithms.">Progetta algoritmi.</span><br><span data-it="Esegui passo passo." data-en="Run them step by step.">Esegui passo passo.</span></h1>
+                    <p data-it="Crea diagrammi con variabili, input/output, condizioni e cicli. Flogoritma li interpreta, evidenzia il nodo corrente e mostra gli output durante l’esecuzione." data-en="Build flowcharts with variables, input/output, conditions, and loops. Flogoritma interprets them, highlights the current node, and displays output as the program runs.">Crea diagrammi con variabili, input/output, condizioni e cicli. Flogoritma li interpreta, evidenzia il nodo corrente e mostra gli output durante l’esecuzione.</p>
                 <div class="hero-actions">
-                        <a href="#download" class="btn btn-primary">Apri le istruzioni</a>
-                    <a class="github-star-button" href="https://github.com/matteocomo/flogoritma" target="_blank" rel="noopener noreferrer" aria-label="Star Flogoritma su GitHub">
+                        <a href="#download" class="btn btn-primary" data-it="Apri le istruzioni" data-en="Get started">Apri le istruzioni</a>
+                    <a class="github-star-button" href="https://github.com/matteocomo/flogoritma" target="_blank" rel="noopener noreferrer" aria-label="Aggiungi una stella a Flogoritma su GitHub" data-aria-it="Aggiungi una stella a Flogoritma su GitHub" data-aria-en="Star Flogoritma on GitHub">
                         <span class="github-star-sheen" aria-hidden="true"></span>
                         <span class="github-star-main">
                             <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.55.1.76-.24.76-.53v-2.05c-3.1.68-3.76-1.32-3.76-1.32-.5-1.3-1.23-1.65-1.23-1.65-1-.68.08-.67.08-.67 1.1.08 1.68 1.12 1.68 1.12.98 1.68 2.57 1.2 3.2.92.1-.72.39-1.2.7-1.48-2.48-.28-5.09-1.24-5.09-5.52 0-1.22.44-2.22 1.16-3-.12-.28-.5-1.42.11-2.96 0 0 .95-.3 3.05 1.14a10.6 10.6 0 0 1 5.55 0c2.1-1.43 3.05-1.14 3.05-1.14.61 1.54.23 2.68.12 2.96.72.78 1.15 1.78 1.15 3 0 4.29-2.62 5.23-5.11 5.5.4.35.75 1.02.75 2.06V22c0 .3.2.64.76.53A11.1 11.1 0 0 0 12 .9Z"/>
                             </svg>
-                            <span>Star on GitHub</span>
+                            <span data-it="Metti una stella" data-en="Star on GitHub">Metti una stella</span>
                         </span>
                         <span class="github-star-count" aria-label="Conteggio stelle GitHub">
                             <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
@@ -619,40 +651,40 @@
     <section id="features" class="features">
         <div class="container">
             <div class="section-header animate-on-scroll">
-                <h2>Pensato per Sviluppatori e Studenti</h2>
-                <p>Un ambiente pulito, privo di distrazioni, ottimizzato per la produttività su ambienti Linux.</p>
+                <h2 data-it="Pensato per Sviluppatori e Studenti" data-en="Built for developers and students">Pensato per Sviluppatori e Studenti</h2>
+                <p data-it="Un ambiente pulito, privo di distrazioni, ottimizzato per la produttività su ambienti Linux." data-en="A focused workspace for building and understanding algorithms on Linux.">Un ambiente pulito, privo di distrazioni, ottimizzato per la produttività su ambienti Linux.</p>
             </div>
             
             <div class="features-grid">
                 <div class="feature-card animate-on-scroll">
-                    <div class="icon-box">⚡</div>
-                    <h3>Editor desktop</h3>
-                    <p>Applicazione C++17 con Qt 6 Widgets, palette, auto-collegamento dei blocchi e progetti .flog.</p>
+                    <div class="icon-box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.914 4a1.5 1.5 0 0 0-2.474-1.561l-9 9A1.5 1.5 0 0 0 5.5 14h4.002a.5.5 0 0 1 .471.666L8.086 20a1.5 1.5 0 0 0 2.475 1.56l9-9A1.5 1.5 0 0 0 18.5 10h-3.997a.5.5 0 0 1-.472-.667z"/></svg></div>
+                    <h3 data-it="Editor desktop" data-en="Desktop editor">Editor desktop</h3>
+                    <p data-it="Applicazione C++17 con Qt 6 Widgets, palette, auto-collegamento dei blocchi e progetti .flog." data-en="A C++17 and Qt 6 Widgets app with a block palette, automatic connectors, and .flog projects.">Applicazione C++17 con Qt 6 Widgets, palette, auto-collegamento dei blocchi e progetti .flog.</p>
                 </div>
                 <div class="feature-card animate-on-scroll" style="animation-delay: 0.1s;">
-                    <div class="icon-box">▶️</div>
-                    <h3>Esecuzione logica</h3>
-                    <p>Esegui assegnazioni, input/output, condizioni if e cicli while con variabili tipizzate.</p>
+                    <div class="icon-box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg></div>
+                    <h3 data-it="Esecuzione logica" data-en="Run your logic">Esecuzione logica</h3>
+                    <p data-it="Esegui assegnazioni, input/output, condizioni if e cicli while con variabili tipizzate." data-en="Run assignments, input/output, if conditions, and while loops with typed variables.">Esegui assegnazioni, input/output, condizioni if e cicli while con variabili tipizzate.</p>
                 </div>
                 <div class="feature-card animate-on-scroll" style="animation-delay: 0.2s;">
-                    <div class="icon-box">🎨</div>
-                    <h3>Debug passo passo</h3>
-                    <p>Avanza un nodo alla volta, osserva il nodo attivo e leggi i risultati nella console di esecuzione.</p>
+                    <div class="icon-box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg></div>
+                    <h3 data-it="Debug passo passo" data-en="Step-by-step debugging">Debug passo passo</h3>
+                    <p data-it="Avanza un nodo alla volta, osserva il nodo attivo e leggi i risultati nella console di esecuzione." data-en="Step through nodes, follow the active block, and read results in the execution console.">Avanza un nodo alla volta, osserva il nodo attivo e leggi i risultati nella console di esecuzione.</p>
                 </div>
                 <div class="feature-card animate-on-scroll" style="animation-delay: 0.3s;">
-                    <div class="icon-box">📦</div>
-                    <h3>Progetti .flog</h3>
-                    <p>Salva e riapri diagrammi, variabili, collegamenti e posizioni dei blocchi. I vecchi progetti ricevono un layout iniziale.</p>
+                    <div class="icon-box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></svg></div>
+                    <h3 data-it="Progetti .flog" data-en=".flog projects">Progetti .flog</h3>
+                    <p data-it="Salva e riapri diagrammi, variabili, collegamenti e posizioni dei blocchi. I vecchi progetti ricevono un layout iniziale." data-en="Save and reopen diagrams, variables, connections, and block positions. Older projects receive an initial layout.">Salva e riapri diagrammi, variabili, collegamenti e posizioni dei blocchi. I vecchi progetti ricevono un layout iniziale.</p>
                 </div>
                 <div class="feature-card animate-on-scroll" style="animation-delay: 0.4s;">
-                    <div class="icon-box">🔓</div>
-                    <h3>Validazione</h3>
-                    <p>Controlla tipi, riferimenti ai nodi e input prima e durante l’esecuzione, con errori associati al nodo.</p>
+                    <div class="icon-box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></div>
+                    <h3 data-it="Validazione" data-en="Validation">Validazione</h3>
+                    <p data-it="Controlla tipi, riferimenti ai nodi e input prima e durante l’esecuzione, con errori associati al nodo." data-en="Check types, node references, and input values, with runtime errors tied to their node.">Controlla tipi, riferimenti ai nodi e input prima e durante l’esecuzione, con errori associati al nodo.</p>
                 </div>
                 <div class="feature-card animate-on-scroll" style="animation-delay: 0.5s;">
-                    <div class="icon-box">⌨️</div>
-                    <h3>Comandi rapidi</h3>
-                    <p>F5 esegue, F6 avanza di un passo e Shift+F5 interrompe. F2 modifica il blocco selezionato.</p>
+                    <div class="icon-box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 8h.01M12 12h.01M14 8h.01M16 12h.01M18 8h.01M6 8h.01M7 16h10M8 12h.01"/><rect width="20" height="16" x="2" y="4" rx="2"/></svg></div>
+                    <h3 data-it="Comandi rapidi" data-en="Keyboard shortcuts">Comandi rapidi</h3>
+                    <p data-it="F5 esegue, F6 avanza di un passo e Shift+F5 interrompe. F2 modifica il blocco selezionato." data-en="F5 runs, F6 steps forward, and Shift+F5 stops. Press F2 to edit the selected block.">F5 esegue, F6 avanza di un passo e Shift+F5 interrompe. F2 modifica il blocco selezionato.</p>
                 </div>
             </div>
         </div>
@@ -662,8 +694,8 @@
     <section id="tech" class="tech-section">
         <div class="container">
             <div class="section-header animate-on-scroll">
-                <h2>Sotto il Cofano</h2>
-                <p>Tecnologie solide per un software affidabile.</p>
+                <h2 data-it="Sotto il Cofano" data-en="Under the hood">Sotto il Cofano</h2>
+                <p data-it="Tecnologie solide per un software affidabile." data-en="A dependable stack for a native desktop app.">Tecnologie solide per un software affidabile.</p>
             </div>
             <div class="tech-grid">
                 <div class="tech-pill animate-on-scroll">
@@ -672,15 +704,15 @@
                 </div>
                 <div class="tech-pill animate-on-scroll" style="animation-delay: 0.1s;">
                     <h4>Qt 6 Widgets + QML</h4>
-                    <p>Interfaccia e runtime</p>
+                    <p data-it="Interfaccia e runtime" data-en="UI and runtime">Interfaccia e runtime</p>
                 </div>
                 <div class="tech-pill animate-on-scroll" style="animation-delay: 0.2s;">
                     <h4>CMake</h4>
-                    <p>Build System</p>
+                    <p data-it="Sistema di build" data-en="Build system">Build System</p>
                 </div>
                 <div class="tech-pill animate-on-scroll" style="animation-delay: 0.3s;">
                     <h4>Linux Wayland</h4>
-                    <p>Native Support</p>
+                    <p data-it="Supporto nativo" data-en="Native support">Supporto nativo</p>
                 </div>
             </div>
         </div>
@@ -690,21 +722,21 @@
     <section id="screenshots" class="screenshots">
         <div class="container">
             <div class="section-header animate-on-scroll">
-                <h2>Flusso di lavoro</h2>
-                <p>Anteprime schematiche dell’editor e dell’esecuzione.</p>
+                <h2 data-it="Flusso di lavoro" data-en="Workflow">Flusso di lavoro</h2>
+                <p data-it="Anteprime schematiche dell’editor e dell’esecuzione." data-en="A quick look at the editor and flow execution.">Anteprime schematiche dell’editor e dell’esecuzione.</p>
             </div>
             <div class="gallery-grid">
                 <div class="gallery-item animate-on-scroll">
-                    <div class="img-placeholder" style="background: linear-gradient(135deg, #1e293b, #0f172a); color: #475569;">Area di disegno</div>
-                    <div class="caption">Palette, blocchi e collegamenti del diagramma</div>
+                    <div class="img-placeholder" style="background: linear-gradient(135deg, #1e293b, #0f172a); color: #475569;"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z"/><circle cx="12" cy="13" r="3"/></svg><span data-it="Area di disegno" data-en="Flowchart canvas">Area di disegno</span></div>
+                    <div class="caption" data-it="Palette, blocchi e collegamenti del diagramma" data-en="Palette, blocks, and flow connections">Palette, blocchi e collegamenti del diagramma</div>
                 </div>
                 <div class="gallery-item animate-on-scroll" style="animation-delay: 0.1s;">
-                    <div class="img-placeholder" style="background: linear-gradient(135deg, #eff6ff, #dbeafe); color: #94a3b8;">Esecuzione</div>
-                    <div class="caption">Evidenziazione del nodo attivo e stato delle variabili</div>
+                    <div class="img-placeholder" style="background: linear-gradient(135deg, #eff6ff, #dbeafe); color: #94a3b8;"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg><span data-it="Esecuzione" data-en="Execution">Esecuzione</span></div>
+                    <div class="caption" data-it="Evidenziazione del nodo attivo e stato delle variabili" data-en="Active node highlight and variable values">Evidenziazione del nodo attivo e stato delle variabili</div>
                 </div>
                 <div class="gallery-item animate-on-scroll" style="animation-delay: 0.2s;">
-                    <div class="img-placeholder" style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); color: #94a3b8;">Console</div>
-                    <div class="caption">Output e richieste di input del diagramma</div>
+                    <div class="img-placeholder" style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); color: #94a3b8;"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 17 6-6-6-6M12 19h8"/></svg><span data-it="Console" data-en="Console">Console</span></div>
+                    <div class="caption" data-it="Output e richieste di input del diagramma" data-en="Flowchart output and input prompts">Output e richieste di input del diagramma</div>
                 </div>
             </div>
         </div>
@@ -714,24 +746,24 @@
     <section id="download" class="download">
         <div class="container">
             <div class="section-header animate-on-scroll">
-                <h2>Inizia a Creare</h2>
-                <p>Scegli il metodo di installazione preferito per la tua distribuzione.</p>
+                <h2 data-it="Inizia a Creare" data-en="Get started">Inizia a Creare</h2>
+                <p data-it="Scegli il metodo di installazione preferito per la tua distribuzione." data-en="Choose how you want to build or install Flogoritma.">Scegli il metodo di installazione preferito per la tua distribuzione.</p>
             </div>
             
             <div class="download-grid">
                 <div class="dl-card featured animate-on-scroll">
-                    <span class="badge badge-dev">In Sviluppo Attivo</span>
-                    <h3>Source Code</h3>
-                    <p>Compila il progetto dal repository Git. Richiede Qt 6 Widgets, QML e CMake.</p>
-                    <a href="https://github.com/matteocomo/flogoritma" class="btn btn-primary" style="width:100%; justify-content:center;" target="_blank" rel="noopener noreferrer">Vai al Repository</a>
+                    <span class="badge badge-dev" data-it="In sviluppo attivo" data-en="Active development">In Sviluppo Attivo</span>
+                    <h3 data-it="Codice sorgente" data-en="Source code">Source Code</h3>
+                    <p data-it="Compila il progetto dal repository Git. Richiede Qt 6 Widgets, QML e CMake." data-en="Build from the Git repository. Requires Qt 6 Widgets, QML, and CMake.">Compila il progetto dal repository Git. Richiede Qt 6 Widgets, QML e CMake.</p>
+                    <a href="https://github.com/matteocomo/flogoritma" class="btn btn-primary" style="width:100%; justify-content:center;" target="_blank" rel="noopener noreferrer" data-it="Vai al Repository" data-en="View repository">Vai al Repository</a>
                     <p style="margin-top:1rem; font-size:0.8rem; opacity:0.7;">cmake -S . -B build<br>cmake --build build -j2</p>
                 </div>
                 
                 <div class="dl-card animate-on-scroll" style="animation-delay: 0.1s;">
-                    <span class="badge badge-stable">Coming Soon</span>
+                    <span class="badge badge-stable" data-it="In arrivo" data-en="Coming soon">Coming Soon</span>
                     <h3>Flatpak / AppImage</h3>
-                    <p>Pacchetti binari universali pronti all'uso per qualsiasi distribuzione Linux.</p>
-                    <button class="btn btn-outline" style="width:100%; justify-content:center; opacity:0.6; cursor:not-allowed;" disabled>Disponibile alla v1.0</button>
+                    <p data-it="Pacchetti binari universali pronti all'uso per qualsiasi distribuzione Linux." data-en="Universal packages for Linux distributions, coming later.">Pacchetti binari universali pronti all'uso per qualsiasi distribuzione Linux.</p>
+                    <button class="btn btn-outline" style="width:100%; justify-content:center; opacity:0.6; cursor:not-allowed;" disabled data-it="Disponibile alla v1.0" data-en="Planned for v1.0">Disponibile alla v1.0</button>
                 </div>
             </div>
         </div>
@@ -740,25 +772,25 @@
     <!-- GitHub CTA -->
     <section class="github-cta">
         <div class="container">
-            <h2 style="font-size: 2rem; margin-bottom: 1rem;">La community è il cuore del progetto</h2>
-            <p style="color: #94a3b8; max-width: 600px; margin: 0 auto;">Segnala bug, proponi nuove feature o contribuisci al codice. Ogni PR è benvenuta.</p>
+            <h2 style="font-size: 2rem; margin-bottom: 1rem;" data-it="La community è il cuore del progetto" data-en="The community is at the heart of the project">La community è il cuore del progetto</h2>
+            <p style="color: #94a3b8; max-width: 600px; margin: 0 auto;" data-it="Segnala bug, proponi nuove feature o contribuisci al codice. Ogni PR è benvenuta." data-en="Report bugs, suggest features, or contribute code. Contributions are welcome.">Segnala bug, proponi nuove feature o contribuisci al codice. Ogni PR è benvenuta.</p>
             
             <div class="stats-row">
                 <div class="stat animate-on-scroll">
                     <h4>C++17</h4>
-                    <span>Runtime</span>
+                    <span data-it="Runtime" data-en="Runtime">Runtime</span>
                 </div>
                 <div class="stat animate-on-scroll" style="animation-delay: 0.1s;">
                     <h4>Qt 6</h4>
-                    <span>Editor desktop</span>
+                    <span data-it="Editor desktop" data-en="Desktop editor">Editor desktop</span>
                 </div>
                 <div class="stat animate-on-scroll" style="animation-delay: 0.2s;">
                     <h4>4</h4>
-                    <span>Test automatici</span>
+                    <span data-it="Test automatici" data-en="Automated tests">Test automatici</span>
                 </div>
             </div>
 
-            <a href="https://github.com/matteocomo/flogoritma" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Contribuisci su GitHub</a>
+            <a href="https://github.com/matteocomo/flogoritma" class="btn btn-primary" target="_blank" rel="noopener noreferrer" data-it="Contribuisci su GitHub" data-en="Contribute on GitHub">Contribuisci su GitHub</a>
         </div>
     </section>
 
@@ -767,8 +799,8 @@
         <div class="container footer-content">
             <div>&copy; 2026 Flogoritma Project.</div>
             <div class="footer-links">
-                <a href="README.md">Guida</a>
-                <a href="https://github.com/matteocomo/flogoritma/issues" target="_blank" rel="noopener noreferrer">Segnala un problema</a>
+                <a href="README.md" data-it="Guida" data-en="Guide">Guida</a>
+                <a href="https://github.com/matteocomo/flogoritma/issues" target="_blank" rel="noopener noreferrer" data-it="Segnala un problema" data-en="Report an issue">Segnala un problema</a>
             </div>
         </div>
     </footer>
@@ -788,18 +820,99 @@
 
         const mobileToggle = document.querySelector('.mobile-toggle');
         const siteLinks = document.getElementById('site-links');
+        const languageSwitcher = document.querySelector('.language-switcher');
+        const languageOptions = languageSwitcher.querySelectorAll('[data-language-option]');
+        const interfaceText = {
+            it: {
+                title: 'Flogoritma | Editor di diagrammi logici per Linux',
+                description: 'Crea e salva diagrammi .flog, poi eseguili con variabili, condizioni, cicli e debug passo per passo.',
+                menuOpen: 'Apri menu',
+                menuClose: 'Chiudi menu',
+                language: 'Lingua',
+                stars: count => `${count} stelle su GitHub`,
+                starsUnavailable: 'Conteggio stelle non disponibile'
+            },
+            en: {
+                title: 'Flogoritma | Flowchart logic editor for Linux',
+                description: 'Build and save .flog flowcharts, then run them with variables, conditions, loops, and step-by-step debugging.',
+                menuOpen: 'Open menu',
+                menuClose: 'Close menu',
+                language: 'Language',
+                stars: count => `${count} stars on GitHub`,
+                starsUnavailable: 'Star count unavailable'
+            }
+        };
+
+        function updateStarLabel(language) {
+            const starCount = document.querySelector('[data-github-stars]');
+            if (!starCount) return;
+            const count = starCount.dataset.count;
+            if (count) starCount.textContent = new Intl.NumberFormat(language).format(Number(count));
+            starCount.parentElement.setAttribute(
+                'aria-label', count ? interfaceText[language].stars(count)
+                                    : interfaceText[language].starsUnavailable);
+        }
+
+        function setLanguage(language, persist = true) {
+            const selectedLanguage = language === 'en' ? 'en' : 'it';
+            document.documentElement.lang = selectedLanguage;
+            document.title = interfaceText[selectedLanguage].title;
+            document.querySelector('meta[name="description"]').content =
+                interfaceText[selectedLanguage].description;
+
+            document.querySelectorAll('[data-it][data-en]').forEach(element => {
+                element.textContent = element.dataset[selectedLanguage];
+            });
+            document.querySelectorAll('[data-aria-it][data-aria-en]').forEach(element => {
+                element.setAttribute('aria-label', element.dataset[`aria${selectedLanguage === 'it' ? 'It' : 'En'}`]);
+            });
+
+            languageSwitcher.setAttribute('aria-label', interfaceText[selectedLanguage].language);
+            languageOptions.forEach(option => {
+                option.setAttribute('aria-pressed', String(option.dataset.languageOption === selectedLanguage));
+            });
+            mobileToggle.setAttribute('aria-label', siteLinks.classList.contains('is-open')
+                ? interfaceText[selectedLanguage].menuClose
+                : interfaceText[selectedLanguage].menuOpen);
+            updateStarLabel(selectedLanguage);
+
+            if (persist) {
+                try {
+                    localStorage.setItem('flogoritma-language', selectedLanguage);
+                } catch (error) {
+                    // Language still changes for this page view when storage is unavailable.
+                }
+            }
+        }
+
         mobileToggle.addEventListener('click', () => {
             const expanded = siteLinks.classList.toggle('is-open');
+            const language = document.documentElement.lang === 'en' ? 'en' : 'it';
             mobileToggle.setAttribute('aria-expanded', String(expanded));
-            mobileToggle.setAttribute('aria-label', expanded ? 'Chiudi menu' : 'Apri menu');
+            mobileToggle.setAttribute('aria-label', expanded
+                ? interfaceText[language].menuClose
+                : interfaceText[language].menuOpen);
         });
         siteLinks.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
                 siteLinks.classList.remove('is-open');
                 mobileToggle.setAttribute('aria-expanded', 'false');
-                mobileToggle.setAttribute('aria-label', 'Apri menu');
+                const language = document.documentElement.lang === 'en' ? 'en' : 'it';
+                mobileToggle.setAttribute('aria-label', interfaceText[language].menuOpen);
             });
         });
+
+        languageOptions.forEach(option => {
+            option.addEventListener('click', () => setLanguage(option.dataset.languageOption));
+        });
+        let savedLanguage = null;
+        try {
+            savedLanguage = localStorage.getItem('flogoritma-language');
+        } catch (error) {
+            // Fall back to the browser language when storage is unavailable.
+        }
+        const browserLanguage = navigator.language.toLowerCase().startsWith('it') ? 'it' : 'en';
+        setLanguage(savedLanguage === 'it' || savedLanguage === 'en' ? savedLanguage : browserLanguage, false);
 
         const starCount = document.querySelector('[data-github-stars]');
         fetch('https://api.github.com/repos/matteocomo/flogoritma', {
@@ -813,13 +926,12 @@
                 if (!Number.isInteger(repository.stargazers_count)) {
                     throw new Error('Conteggio stelle non valido');
                 }
-                starCount.textContent = new Intl.NumberFormat('it-IT').format(repository.stargazers_count);
-                starCount.parentElement.setAttribute(
-                    'aria-label', `${repository.stargazers_count} stelle su GitHub`);
+                starCount.dataset.count = repository.stargazers_count;
+                updateStarLabel(document.documentElement.lang);
             })
             .catch(() => {
                 starCount.textContent = '—';
-                starCount.parentElement.setAttribute('aria-label', 'Conteggio stelle non disponibile');
+                updateStarLabel(document.documentElement.lang);
             });
 
         // Navbar scroll effect
