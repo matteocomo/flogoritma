@@ -1,0 +1,29 @@
+{
+  "formatVersion": 1,
+  "project": {
+    "name": "Contatore",
+    "author": "Matteo",
+    "createdAt": "2026-10-02T10:00:00Z"
+  },
+  "variables": [
+    { "name": "i", "type": "integer" }
+  ],
+  "nodes": [
+    { "id": "n1", "type": "start", "text": "", "next": "n2" },
+    { "id": "n2", "type": "input", "text": "Inserisci il valore iniziale di i", "next": "n3" },
+    { "id": "n3", "type": "assignment", "text": "i = 0", "next": "n4" },
+    {
+      "id": "n4", "type": "while", "text": "i < 3",
+      "trueNext": "n5", "falseNext": "n8"
+    },
+    { "id": "n5", "type": "output", "text": "i", "next": "n6" },
+    { "id": "n6", "type": "assignment", "text": "i = i + 1", "next": "n4" },
+    {
+      "id": "n8", "type": "if", "text": "i == 3",
+      "trueNext": "n9", "falseNext": "n10"
+    },
+    { "id": "n9", "type": "output", "text": "Completato", "next": "n11" },
+    { "id": "n10", "type": "output", "text": "Interrotto", "next": "n11" },
+    { "id": "n11", "type": "end", "text": "" }
+  ]
+}

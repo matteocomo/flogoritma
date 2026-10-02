@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Flogoritma
+GenericName=Editor di diagrammi di flusso
+Comment=Crea ed esegui diagrammi logici
+Exec=flogoritma %f
+TryExec=flogoritma
+Icon=flogoritma
+Terminal=false
+Categories=Education;
+MimeType=application/x-flogoritma;
+StartupNotify=true

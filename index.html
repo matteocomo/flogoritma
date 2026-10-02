@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flogoritma | Editor di diagrammi logici per Linux</title>
+    <meta name="description" content="Crea e salva diagrammi .flog, poi eseguili con variabili, condizioni, cicli e debug passo per passo.">
+    
+    <!-- Google Fonts: Inter for professional UI look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- VARIABLES & RESET --- */
+        :root {
+            --bg-body: #f8fafc;
+            --bg-surface: #ffffff;
+            --bg-dark: #0f172a;
+            --bg-darker: #020617;
+            
+            --primary: #2563eb;       /* Royal Blue */
+            --primary-hover: #1d4ed8;
+            --accent: #06b6d4;        /* Cyan */
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-glow: 0 0 20px rgba(37, 99, 235, 0.15);
+            
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+        ul { list-style: none; }
+        img { max-width: 100%; display: block; }
+
+        /* --- UTILITIES --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.39);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.23);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--text-main);
+            background: var(--bg-body);
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 4rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            margin-bottom: 1rem;
+            color: var(--bg-dark);
+        }
+
+        .section-header p {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+            transition: var(--transition);
+        }
+
+        .nav-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 72px;
+        }
+
+        .logo {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--bg-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            letter-spacing: -0.03em;
+        }
+
+        .logo span { color: var(--primary); }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .nav-links a:hover { color: var(--primary); }
+
+        .mobile-toggle { display: none; cursor: pointer; border: 0; background: none; color: inherit; }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            position: relative;
+            padding: 160px 0 100px;
+            background: radial-gradient(circle at top right, #eff6ff 0%, #ffffff 40%);
+            overflow: hidden;
+        }
+
+        /* Abstract Background Shapes */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(37,99,235,0.05) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            background: #eff6ff;
+            color: var(--primary);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            border: 1px solid #dbeafe;
+        }
+
+        .hero h1 {
+            font-size: 3.75rem;
+            line-height: 1.1;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            color: var(--bg-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            max-width: 540px;
+        }
+
+        .hero-actions { display: flex; gap: 1rem; }
+
+        /* CSS-Only App Mockup */
+        .app-mockup {
+            background: var(--bg-dark);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255,255,255,0.1) inset;
+            aspect-ratio: 16/10;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #334155;
+            transform: perspective(1000px) rotateY(-5deg) rotateX(2deg);
+            transition: transform 0.5s ease;
+        }
+        
+        .app-mockup:hover { transform: perspective(1000px) rotateY(0) rotateX(0); }
+
+        .mockup-header {
+            height: 32px;
+            background: #1e293b;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            gap: 6px;
+        }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: #334155; }
+        .dot.red { background: #ef4444; } .dot.yellow { background: #eab308; } .dot.green { background: #22c55e; }
+
+        .mockup-body { display: flex; height: calc(100% - 32px); }
+        .mockup-sidebar { width: 50px; border-right: 1px solid #334155; background: #0f172a; }
+        .mockup-canvas { 
+            flex: 1; 
+            background-image: radial-gradient(#334155 1px, transparent 1px); 
+            background-size: 20px 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Fake Nodes inside mockup */
+        .node {
+            width: 100px; height: 50px;
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            position: absolute;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 0.7rem; font-weight: bold;
+            background: rgba(6, 182, 212, 0.1);
+            backdrop-filter: blur(4px);
+        }
+        .n1 { top: 30%; left: 20%; border-color: var(--primary); background: rgba(37,99,235,0.1); }
+        .n2 { top: 60%; left: 50%; border-radius: 50%; width: 60px; height: 60px; border-color: #eab308; background: rgba(234,179,8,0.1);}
+        .line {
+            position: absolute; top: 45%; left: 28%; width: 100px; height: 2px; 
+            background: #475569; transform: rotate(30deg); z-index: 0;
+        }
+
+        /* --- FEATURES --- */
+        .features { padding: 6rem 0; background: white; }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            border-radius: var(--radius);
+            background: var(--bg-body);
+            border: 1px solid transparent;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            background: white;
+            border-color: var(--border);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-4px);
+        }
+
+        .icon-box {
+            width: 48px; height: 48px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.25rem;
+            color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .feature-card h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--bg-dark); }
+        .feature-card p { color: var(--text-muted); font-size: 0.95rem; }
+
+        /* --- TECH STACK (Dark Section) --- */
+        .tech-section {
+            padding: 6rem 0;
+            background: var(--bg-dark);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tech-section .section-header h2 { color: white; }
+        .tech-section .section-header p { color: #94a3b8; }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        .tech-pill {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 2rem 1rem;
+            border-radius: var(--radius);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .tech-pill:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: var(--primary);
+        }
+
+        .tech-pill h4 { font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--accent); }
+        .tech-pill p { font-size: 0.85rem; color: #94a3b8; }
+
+        /* --- SCREENSHOTS --- */
+        .screenshots { padding: 6rem 0; background: var(--bg-body); }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .gallery-item {
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: white;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+        .gallery-item:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); }
+
+        .img-placeholder {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            display: flex; align-items: center; justify-content: center;
+            color: #94a3b8; font-weight: 600;
+            position: relative;
+        }
+        
+        /* Decorative elements for placeholders */
+        .img-placeholder::after {
+            content: '📸'; font-size: 2rem; opacity: 0.5;
+        }
+
+        .caption { padding: 1rem; font-size: 0.9rem; font-weight: 500; color: var(--text-main); text-align: center; border-top: 1px solid var(--border); }
+
+        /* --- DOWNLOAD --- */
+        .download { padding: 6rem 0; background: white; }
+
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .dl-card {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .dl-card.featured {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-glow);
+            background: linear-gradient(to bottom, #eff6ff, #ffffff);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+
+        .badge-dev { background: #fef3c7; color: #92400e; }
+        .badge-stable { background: #dcfce7; color: #166534; }
+
+        .dl-card h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .dl-card p { color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem; }
+
+        /* --- GITHUB CTA --- */
+        .github-cta {
+            padding: 5rem 0;
+            background: var(--bg-darker);
+            text-align: center;
+            color: white;
+        }
+
+        .stats-row {
+            display: flex; justify-content: center; gap: 4rem; margin: 3rem 0;
+        }
+        .stat h4 { font-size: 2.5rem; font-weight: 800; color: var(--accent); }
+        .stat span { color: #94a3b8; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; }
+
+        /* --- FOOTER --- */
+        footer {
+            background: var(--bg-dark);
+            color: #94a3b8;
+            padding: 3rem 0;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.9rem;
+        }
+
+        .footer-content {
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+        }
+
+        .footer-links { display: flex; gap: 2rem; }
+        .footer-links a:hover { color: white; }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-on-scroll { opacity: 0; }
+        .is-visible { animation: fadeUp 0.6s ease-out forwards; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 968px) {
+            .hero-grid { grid-template-columns: 1fr; text-align: center; gap: 3rem; }
+            .hero p { margin-left: auto; margin-right: auto; }
+            .hero-actions { justify-content: center; }
+            .hero h1 { font-size: 2.75rem; }
+            .app-mockup { transform: none; max-width: 600px; margin: 0 auto; }
+            .tech-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .nav-links.is-open {
+                display: flex;
+                position: absolute;
+                top: 72px;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem 2rem;
+                background: white;
+                border-bottom: 1px solid var(--border);
+                box-shadow: var(--shadow-md);
+            }
+            .mobile-toggle { display: block; font-size: 1.5rem; }
+            .stats-row { gap: 2rem; flex-wrap: wrap; }
+            .footer-content { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="container nav-inner">
+            <a href="#" class="logo">🔷 Flogoritma</a>
+            <ul class="nav-links" id="site-links">
+                <li><a href="#features">Funzionalità</a></li>
+                <li><a href="#tech">Tecnologia</a></li>
+                <li><a href="#screenshots">Flusso di lavoro</a></li>
+                <li><a href="#download">Download</a></li>
+                <li><a href="https://github.com/matteocomo/flogoritma" target="_blank" style="color:var(--bg-dark); font-weight:700;">GitHub ↗</a></li>
+            </ul>
+            <button class="mobile-toggle" type="button" aria-label="Apri menu" aria-expanded="false" aria-controls="site-links">☰</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="container hero-grid">
+            <div class="hero-content animate-on-scroll">
+                <div class="hero-badge">Editor desktop Qt 6 · anteprima</div>
+                    <h1>Progetta algoritmi.<br><span>Esegui passo passo.</span></h1>
+                    <p>Crea diagrammi con variabili, input/output, condizioni e cicli. Flogoritma li interpreta, evidenzia il nodo corrente e mostra gli output durante l’esecuzione.</p>
+                <div class="hero-actions">
+                        <a href="#download" class="btn btn-primary">Apri le istruzioni</a>
+                        <a href="https://github.com/matteocomo/flogoritma" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Repository GitHub</a>
+                </div>
+            </div>
+            
+            <!-- CSS Only Mockup -->
+            <div class="hero-visual animate-on-scroll" style="animation-delay: 0.2s;">
+                <div class="app-mockup">
+                    <div class="mockup-header">
+                        <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+                    </div>
+                    <div class="mockup-body">
+                        <div class="mockup-sidebar"></div>
+                        <div class="mockup-canvas">
+                            <div class="line"></div>
+                            <div class="node n1">START</div>
+                            <div class="node n2">IF</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2>Pensato per Sviluppatori e Studenti</h2>
+                <p>Un ambiente pulito, privo di distrazioni, ottimizzato per la produttività su ambienti Linux.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card animate-on-scroll">
+                    <div class="icon-box">⚡</div>
+                    <h3>Editor desktop</h3>
+                    <p>Applicazione C++17 con Qt 6 Widgets, palette, auto-collegamento dei blocchi e progetti .flog.</p>
+                </div>
+                <div class="feature-card animate-on-scroll" style="animation-delay: 0.1s;">
+                    <div class="icon-box">▶️</div>
+                    <h3>Esecuzione logica</h3>
+                    <p>Esegui assegnazioni, input/output, condizioni if e cicli while con variabili tipizzate.</p>
+                </div>
+                <div class="feature-card animate-on-scroll" style="animation-delay: 0.2s;">
+                    <div class="icon-box">🎨</div>
+                    <h3>Debug passo passo</h3>
+                    <p>Avanza un nodo alla volta, osserva il nodo attivo e leggi i risultati nella console di esecuzione.</p>
+                </div>
+                <div class="feature-card animate-on-scroll" style="animation-delay: 0.3s;">
+                    <div class="icon-box">📦</div>
+                    <h3>Progetti .flog</h3>
+                    <p>Salva e riapri diagrammi, variabili, collegamenti e posizioni dei blocchi. I vecchi progetti ricevono un layout iniziale.</p>
+                </div>
+                <div class="feature-card animate-on-scroll" style="animation-delay: 0.4s;">
+                    <div class="icon-box">🔓</div>
+                    <h3>Validazione</h3>
+                    <p>Controlla tipi, riferimenti ai nodi e input prima e durante l’esecuzione, con errori associati al nodo.</p>
+                </div>
+                <div class="feature-card animate-on-scroll" style="animation-delay: 0.5s;">
+                    <div class="icon-box">⌨️</div>
+                    <h3>Comandi rapidi</h3>
+                    <p>F5 esegue, F6 avanza di un passo e Shift+F5 interrompe. F2 modifica il blocco selezionato.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section id="tech" class="tech-section">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2>Sotto il Cofano</h2>
+                <p>Tecnologie solide per un software affidabile.</p>
+            </div>
+            <div class="tech-grid">
+                <div class="tech-pill animate-on-scroll">
+                    <h4>C++ 17</h4>
+                    <p>Runtime</p>
+                </div>
+                <div class="tech-pill animate-on-scroll" style="animation-delay: 0.1s;">
+                    <h4>Qt 6 Widgets + QML</h4>
+                    <p>Interfaccia e runtime</p>
+                </div>
+                <div class="tech-pill animate-on-scroll" style="animation-delay: 0.2s;">
+                    <h4>CMake</h4>
+                    <p>Build System</p>
+                </div>
+                <div class="tech-pill animate-on-scroll" style="animation-delay: 0.3s;">
+                    <h4>Linux Wayland</h4>
+                    <p>Native Support</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots -->
+    <section id="screenshots" class="screenshots">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2>Flusso di lavoro</h2>
+                <p>Anteprime schematiche dell’editor e dell’esecuzione.</p>
+            </div>
+            <div class="gallery-grid">
+                <div class="gallery-item animate-on-scroll">
+                    <div class="img-placeholder" style="background: linear-gradient(135deg, #1e293b, #0f172a); color: #475569;">Area di disegno</div>
+                    <div class="caption">Palette, blocchi e collegamenti del diagramma</div>
+                </div>
+                <div class="gallery-item animate-on-scroll" style="animation-delay: 0.1s;">
+                    <div class="img-placeholder" style="background: linear-gradient(135deg, #eff6ff, #dbeafe); color: #94a3b8;">Esecuzione</div>
+                    <div class="caption">Evidenziazione del nodo attivo e stato delle variabili</div>
+                </div>
+                <div class="gallery-item animate-on-scroll" style="animation-delay: 0.2s;">
+                    <div class="img-placeholder" style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); color: #94a3b8;">Console</div>
+                    <div class="caption">Output e richieste di input del diagramma</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section id="download" class="download">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2>Inizia a Creare</h2>
+                <p>Scegli il metodo di installazione preferito per la tua distribuzione.</p>
+            </div>
+            
+            <div class="download-grid">
+                <div class="dl-card featured animate-on-scroll">
+                    <span class="badge badge-dev">In Sviluppo Attivo</span>
+                    <h3>Source Code</h3>
+                    <p>Compila il progetto dal repository Git. Richiede Qt 6 Widgets, QML e CMake.</p>
+                    <a href="https://github.com/matteocomo/flogoritma" class="btn btn-primary" style="width:100%; justify-content:center;" target="_blank" rel="noopener noreferrer">Vai al Repository</a>
+                    <p style="margin-top:1rem; font-size:0.8rem; opacity:0.7;">cmake -S . -B build<br>cmake --build build -j2</p>
+                </div>
+                
+                <div class="dl-card animate-on-scroll" style="animation-delay: 0.1s;">
+                    <span class="badge badge-stable">Coming Soon</span>
+                    <h3>Flatpak / AppImage</h3>
+                    <p>Pacchetti binari universali pronti all'uso per qualsiasi distribuzione Linux.</p>
+                    <button class="btn btn-outline" style="width:100%; justify-content:center; opacity:0.6; cursor:not-allowed;" disabled>Disponibile alla v1.0</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GitHub CTA -->
+    <section class="github-cta">
+        <div class="container">
+            <h2 style="font-size: 2rem; margin-bottom: 1rem;">La community è il cuore del progetto</h2>
+            <p style="color: #94a3b8; max-width: 600px; margin: 0 auto;">Segnala bug, proponi nuove feature o contribuisci al codice. Ogni PR è benvenuta.</p>
+            
+            <div class="stats-row">
+                <div class="stat animate-on-scroll">
+                    <h4>C++17</h4>
+                    <span>Runtime</span>
+                </div>
+                <div class="stat animate-on-scroll" style="animation-delay: 0.1s;">
+                    <h4>Qt 6</h4>
+                    <span>Editor desktop</span>
+                </div>
+                <div class="stat animate-on-scroll" style="animation-delay: 0.2s;">
+                    <h4>4</h4>
+                    <span>Test automatici</span>
+                </div>
+            </div>
+
+            <a href="https://github.com/matteocomo/flogoritma" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Contribuisci su GitHub</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <div>&copy; 2026 Flogoritma Project.</div>
+            <div class="footer-links">
+                <a href="README.md">Guida</a>
+                <a href="https://github.com/matteocomo/flogoritma/issues" target="_blank" rel="noopener noreferrer">Segnala un problema</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Intersection Observer for scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target); // Animate only once
+                }
+            });
+        }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+        const mobileToggle = document.querySelector('.mobile-toggle');
+        const siteLinks = document.getElementById('site-links');
+        mobileToggle.addEventListener('click', () => {
+            const expanded = siteLinks.classList.toggle('is-open');
+            mobileToggle.setAttribute('aria-expanded', String(expanded));
+            mobileToggle.setAttribute('aria-label', expanded ? 'Chiudi menu' : 'Apri menu');
+        });
+        siteLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                siteLinks.classList.remove('is-open');
+                mobileToggle.setAttribute('aria-expanded', 'false');
+                mobileToggle.setAttribute('aria-label', 'Apri menu');
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                nav.style.boxShadow = '0 4px 20px rgba(0,0,0,0.05)';
+                nav.style.background = 'rgba(255, 255, 255, 0.95)';
+            } else {
+                nav.style.boxShadow = 'none';
+                nav.style.background = 'rgba(255, 255, 255, 0.85)';
+            }
+        });
+
+        // Smooth Scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

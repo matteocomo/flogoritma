@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/icons">
+    <file alias="flogoritma.svg">flogoritma.svg</file>
+  </qresource>
+</RCC>
